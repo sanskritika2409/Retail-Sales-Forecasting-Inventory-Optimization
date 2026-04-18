@@ -13,6 +13,13 @@ Python, Pandas, Scikit-learn, Streamlit
 
 ## Run Project
 
-```bash
+bash
 python main.py
 streamlit run app/app.py
+Output
+Forecast Graph
+Inventory Table
+CSV Output
+Author
+
+Sanskritika Awasthi
