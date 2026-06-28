@@ -6,13 +6,24 @@ import streamlit as st
 st.set_page_config(page_title="Retail Forecast Dashboard", page_icon="📊", layout="wide")
 st.title("📊 Retail Forecast & Inventory Dashboard")
 
-# 2. Safe Dynamic Path Handling
-# This finds the absolute path of app.py, looks one level up (..), and targets outputs/final_output.csv
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(BASE_DIR, "..", "outputs", "final_output.csv")
+# 2. Resilient Path Handling
+# Try to find the file in the expected relative path, fallback to absolute root if needed
+if os.path.exists("outputs/final_output.csv"):
+    csv_path = "outputs/final_output.csv"
+elif os.path.exists("../outputs/final_output.csv"):
+    csv_path = "../outputs/final_output.csv"
+else:
+    # Look for it anywhere inside the project workspace
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.join(BASE_DIR, "..", "outputs", "final_output.csv")
 
-# Load the dataset
-df = pd.read_csv(csv_path)
+# Load the dataset safely
+try:
+    df = pd.read_csv(csv_path)
+except FileNotFoundError:
+    st.error(f"⚠️ Could not find 'final_output.csv'. Checked path: {csv_path}")
+    st.info("Please make sure your 'outputs' folder contains 'final_output.csv' and is pushed to GitHub.")
+    st.stop()
 
 # 3. Sidebar Filters
 st.sidebar.markdown("### 📦 Select Filters")
